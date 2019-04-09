@@ -14,9 +14,8 @@
 <ion-content>
     <ion-list> 
      <button ion-item *ngFor="let device of devices">
-       <h2>{{ device.name || 'Unnamed' }}</h2>
-       <p>{{ device.id }}</p>
-       <p>RSSI: {{ device.rssi }}</p>
+       <h2>Temp: {{ readings.temp || 'unknown' }}</h2>
+       <p>RH: {{ readings.rh }}</p>
      </button>  
     </ion-list> 
  </ion-content>
