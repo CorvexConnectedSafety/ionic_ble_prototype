@@ -3,21 +3,13 @@
     <ion-title>
       Reading a Temp Sensor
     </ion-title>
-    <ion-buttons end>
-        <button ion-button (click)="scan()">
-          Scan
-        </button>
-      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-list> 
-     <button ion-item *ngFor="let device of devices">
-       <h2>Temp: {{ readings.temp || 'unknown' }}</h2>
-       <p>RH: {{ readings.rh }}</p>
-     </button>  
-    </ion-list> 
+  <h2>Heat Index: {{ reading.hi || 'unknown' }}</h2>
+  <p>Temp: {{ reading.temp || 'unknown' }}</p>
+  <p>RH: {{ reading.rh }}</p>
  </ion-content>
  
  <ion-footer>

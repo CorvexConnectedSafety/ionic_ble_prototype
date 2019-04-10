@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, ViewChild } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
 import { WorktempService } from '../services/worktemp/worktemp.service';
 import { BLE } from '@ionic-native/ble/ngx';
@@ -10,9 +10,11 @@ import { BLE } from '@ionic-native/ble/ngx';
 })
 export class HomePage {
 
-  readings: any[] = [];
-  devices: any[] = [];
+  reading: any;
   statusMessage: string;
+
+  SCAN_TIME = 2000;
+  PAUSE_TIME = 2000;
 
   constructor(
     public navCtrl: NavController,
@@ -29,25 +31,18 @@ export class HomePage {
   }
 
   scan() {
-    this.setStatus('Scanning for Bluetooth LE Devices');
-    this.devices = [];  // clear list
+    this.setStatus('Checking for updates');
 
-    this.worktemp.doScan(10000, (temp, rh) => { this.onTempRead(temp, rh); });
-    setTimeout(this.setStatus.bind(this), 10000, 'Scan complete');
+    this.worktemp.doScan(this.SCAN_TIME, (data) => { this.onTempRead(data); });
+    setTimeout(() => {
+      this.setStatus('Paused between scans');
+      setTimeout(() => { this.scan(); }, this.PAUSE_TIME);
+    }, this.SCAN_TIME);
   }
 
-  onTempRead(temp, rh) {
-    this.readings.push({ temp: temp, rh: rh });
-  }
-  onDeviceDiscovered(device) {
-    console.log('Discovered ' + JSON.stringify(device, null, 2));
-    // on iOS, print the manufacturer data if it exists
-    if (device.advertising && device.advertising.kCBAdvDataManufacturerData) {
-      const mfgData = new Uint8Array(device.advertising.kCBAdvDataManufacturerData);
-      console.log('Manufacturer Data is', mfgData);
-    }
+  onTempRead(data) {
     this.ngZone.run(() => {
-      this.devices.push(device);
+      this.reading = data;
     });
   }
 
